@@ -231,6 +231,8 @@ Properties
    +---------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
    | :ref:`int<class_int>`                             | :ref:`debug/gdscript/warnings/unsafe_void_return<class_ProjectSettings_property_debug/gdscript/warnings/unsafe_void_return>`                                                                               | ``1``                                                                                            |
    +---------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+   | :ref:`int<class_int>`                             | :ref:`debug/gdscript/warnings/untyped_declaration<class_ProjectSettings_property_debug/gdscript/warnings/untyped_declaration>`                                                                             | ``0``                                                                                            |
+   +---------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
    | :ref:`int<class_int>`                             | :ref:`debug/gdscript/warnings/unused_local_constant<class_ProjectSettings_property_debug/gdscript/warnings/unused_local_constant>`                                                                         | ``1``                                                                                            |
    +---------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
    | :ref:`int<class_int>`                             | :ref:`debug/gdscript/warnings/unused_parameter<class_ProjectSettings_property_debug/gdscript/warnings/unused_parameter>`                                                                                   | ``1``                                                                                            |
@@ -1121,6 +1123,10 @@ Properties
    +---------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
    | :ref:`bool<class_bool>`                           | :ref:`navigation/avoidance/thread_model/avoidance_use_multiple_threads<class_ProjectSettings_property_navigation/avoidance/thread_model/avoidance_use_multiple_threads>`                                   | ``true``                                                                                         |
    +---------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+   | :ref:`bool<class_bool>`                           | :ref:`navigation/baking/thread_model/baking_use_high_priority_threads<class_ProjectSettings_property_navigation/baking/thread_model/baking_use_high_priority_threads>`                                     | ``true``                                                                                         |
+   +---------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+   | :ref:`bool<class_bool>`                           | :ref:`navigation/baking/thread_model/baking_use_multiple_threads<class_ProjectSettings_property_navigation/baking/thread_model/baking_use_multiple_threads>`                                               | ``true``                                                                                         |
+   +---------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
    | :ref:`int<class_int>`                             | :ref:`network/limits/debugger/max_chars_per_second<class_ProjectSettings_property_network/limits/debugger/max_chars_per_second>`                                                                           | ``32768``                                                                                        |
    +---------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
    | :ref:`int<class_int>`                             | :ref:`network/limits/debugger/max_errors_per_second<class_ProjectSettings_property_network/limits/debugger/max_errors_per_second>`                                                                         | ``400``                                                                                          |
@@ -1509,6 +1515,8 @@ Properties
    +---------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
    | :ref:`bool<class_bool>`                           | :ref:`xr/openxr/enabled<class_ProjectSettings_property_xr/openxr/enabled>`                                                                                                                                 | ``false``                                                                                        |
    +---------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+   | :ref:`int<class_int>`                             | :ref:`xr/openxr/environment_blend_mode<class_ProjectSettings_property_xr/openxr/environment_blend_mode>`                                                                                                   | ``"0"``                                                                                          |
+   +---------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
    | :ref:`int<class_int>`                             | :ref:`xr/openxr/form_factor<class_ProjectSettings_property_xr/openxr/form_factor>`                                                                                                                         | ``"0"``                                                                                          |
    +---------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
    | :ref:`int<class_int>`                             | :ref:`xr/openxr/reference_space<class_ProjectSettings_property_xr/openxr/reference_space>`                                                                                                                 | ``"1"``                                                                                          |
@@ -1627,6 +1635,8 @@ If ``true``, scale the boot splash image to the full window size (preserving the
 Path to an image used as the boot splash. If left empty, the default Godot Engine splash will be displayed instead.
 
 \ **Note:** Only effective if :ref:`application/boot_splash/show_image<class_ProjectSettings_property_application/boot_splash/show_image>` is ``true``.
+
+\ **Note:** The only supported format is PNG. Using another image format will result in an error.
 
 .. rst-class:: classref-item-separator
 
@@ -1820,7 +1830,7 @@ If ``false``, a non-hidden directory (``godot``) will be used instead.
 
 :ref:`String<class_String>` **application/config/version** = ``""``
 
-The project's human-readable version identifier. This should always be set to a non-empty string, as some exporters rely on this value being defined.
+The project's human-readable version identifier. This is used by exporters if the version identifier isn't overridden there. If :ref:`application/config/version<class_ProjectSettings_property_application/config/version>` is an empty string and the version identifier isn't overridden in an exporter, the exporter will use ``1.0.0`` as a version identifier.
 
 .. rst-class:: classref-item-separator
 
@@ -1992,6 +2002,8 @@ If :ref:`display/window/vsync/vsync_mode<class_ProjectSettings_property_display/
 
 See also :ref:`physics/common/physics_ticks_per_second<class_ProjectSettings_property_physics/common/physics_ticks_per_second>`.
 
+This setting can be overridden using the ``--max-fps <fps;>`` command line argument (including with a value of ``0`` for unlimited framerate).
+
 \ **Note:** This property is only read when the project starts. To change the rendering FPS cap at runtime, set :ref:`Engine.max_fps<class_Engine_property_max_fps>` instead.
 
 .. rst-class:: classref-item-separator
@@ -2098,7 +2110,9 @@ Specifies the preferred output latency in milliseconds for audio. Lower values w
 
 Audio output latency may be constrained by the host operating system and audio hardware drivers. If the host can not provide the specified audio output latency then Godot will attempt to use the nearest latency allowed by the host. As such you should always use :ref:`AudioServer.get_output_latency<class_AudioServer_method_get_output_latency>` to determine the actual audio output latency.
 
-\ **Note:** This setting is ignored on all versions of Windows prior to Windows 10.
+Audio output latency can be overridden using the ``--audio-output-latency <ms>`` command line argument.
+
+\ **Note:** This setting is ignored on Android, and on all versions of Windows prior to Windows 10.
 
 .. rst-class:: classref-item-separator
 
@@ -2753,6 +2767,18 @@ When set to ``warn`` or ``error``, produces a warning or an error respectively w
 :ref:`int<class_int>` **debug/gdscript/warnings/unsafe_void_return** = ``1``
 
 When set to ``warn`` or ``error``, produces a warning or an error respectively when returning a call from a ``void`` function when such call cannot be guaranteed to be also ``void``.
+
+.. rst-class:: classref-item-separator
+
+----
+
+.. _class_ProjectSettings_property_debug/gdscript/warnings/untyped_declaration:
+
+.. rst-class:: classref-property
+
+:ref:`int<class_int>` **debug/gdscript/warnings/untyped_declaration** = ``0``
+
+When set to ``warn`` or ``error``, produces a warning or an error respectively when a variable or parameter has no static type, or if a function has no static return type.
 
 .. rst-class:: classref-item-separator
 
@@ -4262,7 +4288,7 @@ If ``true``, snaps :ref:`Control<class_Control>` node vertices to the nearest pi
 
 :ref:`bool<class_bool>` **gui/common/swap_cancel_ok**
 
-If ``true``, swaps **Cancel** and **OK** buttons in dialogs on Windows and UWP to follow interface conventions. :ref:`DisplayServer.get_swap_cancel_ok<class_DisplayServer_method_get_swap_cancel_ok>` can be used to query whether buttons are swapped at run-time.
+If ``true``, swaps **Cancel** and **OK** buttons in dialogs on Windows to follow interface conventions. :ref:`DisplayServer.get_swap_cancel_ok<class_DisplayServer_method_get_swap_cancel_ok>` can be used to query whether buttons are swapped at run-time.
 
 \ **Note:** This doesn't affect native dialogs such as the ones spawned by :ref:`DisplayServer.dialog_show<class_DisplayServer_method_dialog_show>`.
 
@@ -8348,6 +8374,30 @@ If enabled the avoidance calculations use multiple threads.
 
 ----
 
+.. _class_ProjectSettings_property_navigation/baking/thread_model/baking_use_high_priority_threads:
+
+.. rst-class:: classref-property
+
+:ref:`bool<class_bool>` **navigation/baking/thread_model/baking_use_high_priority_threads** = ``true``
+
+If enabled and async navmesh baking uses multiple threads the threads run with high priority.
+
+.. rst-class:: classref-item-separator
+
+----
+
+.. _class_ProjectSettings_property_navigation/baking/thread_model/baking_use_multiple_threads:
+
+.. rst-class:: classref-property
+
+:ref:`bool<class_bool>` **navigation/baking/thread_model/baking_use_multiple_threads** = ``true``
+
+If enabled the async navmesh baking uses multiple threads.
+
+.. rst-class:: classref-item-separator
+
+----
+
 .. _class_ProjectSettings_property_network/limits/debugger/max_chars_per_second:
 
 .. rst-class:: classref-property
@@ -10941,6 +10991,18 @@ If ``true`` Godot will setup and initialize OpenXR on startup.
 
 ----
 
+.. _class_ProjectSettings_property_xr/openxr/environment_blend_mode:
+
+.. rst-class:: classref-property
+
+:ref:`int<class_int>` **xr/openxr/environment_blend_mode** = ``"0"``
+
+Specify how OpenXR should blend in the environment. This is specific to certain AR and passthrough devices where camera images are blended in by the XR compositor.
+
+.. rst-class:: classref-item-separator
+
+----
+
 .. _class_ProjectSettings_property_xr/openxr/form_factor:
 
 .. rst-class:: classref-property
@@ -11057,8 +11119,8 @@ Adds a custom property info to a property. The dictionary must contain:
     var propertyInfo = new Godot.Collections.Dictionary
     {
         {"name", "category/propertyName"},
-        {"type", Variant.Type.Int},
-        {"hint", PropertyHint.Enum},
+        {"type", (int)Variant.Type.Int},
+        {"hint", (int)PropertyHint.Enum},
         {"hint_string", "one,two,three"},
     };
     
