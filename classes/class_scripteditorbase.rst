@@ -10,7 +10,7 @@
 ScriptEditorBase
 ================
 
-**Inherits:** :ref:`VBoxContainer<class_VBoxContainer>` **<** :ref:`BoxContainer<class_BoxContainer>` **<** :ref:`Container<class_Container>` **<** :ref:`Control<class_Control>` **<** :ref:`CanvasItem<class_CanvasItem>` **<** :ref:`Node<class_Node>` **<** :ref:`Object<class_Object>`
+**Inherits:** :ref:`Control<class_Control>` **<** :ref:`CanvasItem<class_CanvasItem>` **<** :ref:`Node<class_Node>` **<** :ref:`Object<class_Object>`
 
 Base editor for editing scripts in the :ref:`ScriptEditor<class_ScriptEditor>`.
 
@@ -175,7 +175,7 @@ Method Descriptions
 
 |void| **add_syntax_highlighter**\ (\ highlighter\: :ref:`EditorSyntaxHighlighter<class_EditorSyntaxHighlighter>`\ ) :ref:`🔗<class_ScriptEditorBase_method_add_syntax_highlighter>`
 
-Adds a :ref:`EditorSyntaxHighlighter<class_EditorSyntaxHighlighter>` to the open script.
+Adds an :ref:`EditorSyntaxHighlighter<class_EditorSyntaxHighlighter>` to the open script.
 
 .. rst-class:: classref-item-separator
 
@@ -190,6 +190,7 @@ Adds a :ref:`EditorSyntaxHighlighter<class_EditorSyntaxHighlighter>` to the open
 Returns the underlying :ref:`Control<class_Control>` used for editing scripts. For text scripts, this is a :ref:`CodeEdit<class_CodeEdit>`.
 
 .. |virtual| replace:: :abbr:`virtual (This method should typically be overridden by the user to have any effect.)`
+.. |required| replace:: :abbr:`required (This method is required to be overridden when extending its base class.)`
 .. |const| replace:: :abbr:`const (This method has no side effects. It doesn't modify any of the instance's member variables.)`
 .. |vararg| replace:: :abbr:`vararg (This method accepts any number of arguments after the ones described here.)`
 .. |constructor| replace:: :abbr:`constructor (This method is used to construct a type.)`
